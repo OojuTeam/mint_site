@@ -3,9 +3,9 @@
 <% end %>
 
 <% @setup = {
-  title: "#{@project.name} Mint",
+  title: 'Mint',
   description: @project.description,
-  og_image: @project.bg_image_url
+  og_image: @project.sns_image_url || @project.bg_image_url
 }
 %>
 
