@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer components {
+  .button {
+    @apply inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded text-base tracking-wide;
+  }
+
+  .button--lg {
+    @apply text-lg py-4 px-8 lg:text-2xl lg:px-6 lg:py-4;
+  }
+
+  /* .tooltip {
+    @apply invisible absolute;
+  }
+
+  .has-tooltip:hover .tooltip {
+    @apply visible z-50;
+  } */
+}
+
+

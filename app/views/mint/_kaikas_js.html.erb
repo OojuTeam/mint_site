@@ -1,0 +1,136 @@
+<!-- NOTE: caver 1.4.1 is the latest version that officially supports Kaikas wallet interactions -->
+<!-- <script type="text/javascript" src="https://bundle.run/buffer@6.0.3"></script> -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/caver-js/1.6.8/caver.min.js"></script>
+<script type="text/javascript">
+  // var Buffer = window.buffer.Buffer; // used by Caver
+  var account, caver, contract;
+
+  const onboardButton = document.getElementById('onboard');
+  const beginMintButton = document.getElementById('begin-mint');
+  const beginMintContainer = document.getElementById('begin-mint-container');
+  const completedTransactionLink = document.getElementById('completed-transaction-link');
+  const mintProgressTracker = document.getElementById('mint-progress-counter');
+
+  let accounts;
+
+  // FUNCTIONS
+  function instantiateKaikas() {
+    window.klaytn.enable().then((accounts) => {
+      account = accounts[0];
+      console.log('connected Kaikas wallet: ', account);
+      showConnectedAccounts();
+      activeWalletChangeListener();
+    });
+  }
+
+  const showConnectedAccounts = () => {
+    onboardButton.classList.remove('ml-20');
+    beginMintContainer.classList.remove('hidden');
+    onboardButton.disabled = true;
+
+    var ca = setInterval(function(){
+      if (window.klaytn.selectedAddress) {
+        clearInterval(ca);
+        var connectedWalletShort = window.klaytn.selectedAddress.slice(0, 6) + '...' + window.klaytn.selectedAddress.slice(-3);
+        onboardButton.innerText = 'Connected: ' + connectedWalletShort;
+      }
+    }, 200);
+  };
+
+  const updateControls = () => {
+    if (!window.klaytn) {
+      onboardButton.innerText = 'Install Kaikas';
+      onboardButton.onclick = () => {
+        onboardButton.innerText = 'Onboarding in progress';
+        onboardButton.disabled = true;
+      };
+    } else {
+      onboardButton.innerText = 'Connect Kaikas';
+      onboardButton.onclick = async () => {
+        instantiateKaikas();
+      };
+    }
+  };
+
+  // NOTE: using 1.4.1 strategy to avoid errors (https://docs.klaytn.com/dapp/sdk/caver-js/v1.4.1/api-references/caver.klay.contract#new-contract)
+  // common error if this type of contract instantiation is not done: https://github.com/klaytn/caver-js#connect-with-kaikas-web-extension
+  function setupContractInstance() {
+    caver = new Caver(window.klaytn);
+    contract = new caver.klay.Contract(contractDetails.contractAbi, contractDetails.contractAddress)
+  }
+
+  function activeWalletChangeListener() {
+    window.klaytn.on('accountsChanged', function(accounts) {
+      account = accounts[0];
+      console.log('changed Kaikas wallet to: ', account);
+    })
+  }
+
+  function showMintProgress() {
+    contract.methods.totalSupply().call().then((data) => {
+      window.totalMinted = data.toString();
+    })
+
+    contract.methods.ASSET_LIMIT().call().then((data) => {
+      window.totalSupply = data.toString();
+    })
+
+    var mp = setInterval(function(){
+      if (window.totalMinted != null && window.totalSupply != null) {
+        clearInterval(mp);
+        mintProgressTracker.innerText = '(' + window.totalMinted + '/' + window.totalSupply + ' minted)'
+      }
+    }, 500);
+  }
+
+  const setReceipt = (msg) => {
+    completedTransactionLink.innerText = msg;
+  }
+
+  // NOTE: ok to modify 'contract.methods.XX' to any function desired
+  // can use all 3 invocation strategies - name, param, signature (https://docs.klaytn.com/dapp/sdk/caver-js/v1.4.1/api-references/caver.klay.contract#methods)
+  async function beginMint() { // must pass in string type even if param type in contract is int
+    setReceipt('');
+
+    var numAssets = parseInt(document.getElementById('qty').value);
+    var klayValueToSend = (contractDetails.purchasePrice * numAssets);
+
+    try {
+      var tx = await contract.methods.mint(numAssets).send({value: klayValueToSend.toString(), from: account, gas: contractDetails.klaytnGas});
+      console.log(tx);
+      completedTransactionLink.innerHTML = 'Your transaction is complete! <br><a target="_blank" class="font-medium text-indigo-600" href="' + contractDetails.networkTransactionBaseUri + tx.transactionHash + '">View it here >></a>';
+      return "";
+    } catch(error) {
+      errorHandler(error);
+      return ""
+    }
+  }
+
+  const errorHandler = (error) => {
+    if (error.toString().includes('User denied transaction signature.')) {
+      errorMsg = 'Mint denied. Please try again.';
+    } else if (error.toString().includes('insufficient funds')) {
+      errorMsg = 'Mint rejected. Please add more funds (~' + document.getElementById('totalValue').textContent + ') to your wallet.';
+    } else if (error.toString().includes('You can only buy')) {
+      errorMsg = 'You can only buy 1 to ' + maxPurchaseQuantity.toString() + ' at a time.';
+    } else if (error && error.code === 4001) {
+      errorMsg = 'Mint rejected. Click "mint now" button to try again.';
+    } else if (error && error.code === -32603 && error.data.message.includes('Sale has not started yet')) {
+      errorMsg = 'Mint rejected. Sale has not started yet. Please try again when mint is live.';
+    } else if (error && error.code === -32603 && error.data.message.includes('insufficient funds')) {
+      errorMsg = 'Mint rejected. Please add more funds (~' + document.getElementById('totalValue').textContent + ') to your wallet.';
+    } else if (error && error.code === -32603 && error.data.message.includes('not enough assets left')) {
+      errorMsg = 'There are not enough assets left. Try again with a smaller quantity, otherwise the collection might be sold out.';
+    } else {
+      errorMsg = 'Something went wrong. Please send us a message in the Discord.';
+    }
+
+    setReceipt(errorMsg);
+  }
+
+  // DOM-ready
+  setupContractInstance();
+  showMintProgress();
+  updateControls();
+  beginMintButton.addEventListener('click', beginMint);
+</script>

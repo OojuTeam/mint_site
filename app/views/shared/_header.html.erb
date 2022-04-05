@@ -1,0 +1,66 @@
+<header class="absolute top-0 left-0 w-full z-20" data-controller="header">
+  <div class="mx-auto px-5">
+    <div class="flex justify-between items-center py-5 md:justify-start md:space-x-6 xl:space-x-10">
+      <div class="flex justify-start xl:w-0 md:flex-1">
+        <a href="<%= root_path %>" class="flex items-center">
+          <%= render partial: 'shared/ooju/logo', locals: { header: true } %>
+          <span class="sr-only"><%= Project::DEFAULT_NAME %></span>
+        </a>
+      </div>
+      <!-- <div class="flex md:hidden" data-action="click->header#toggleMobileNav">
+        <button type="button" class="p-2 inline-flex items-center justify-center text-black-100 focus:outline-none js--navbar-burger">
+          <span class="sr-only">Open menu</span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div> -->
+      <nav class="hidden md:flex space-x-4 sm:space-x-6 lg:space-x-10 text-base">
+        <% if current_user && current_user.admin? %>
+          <%= link_to 'Mint', mint_index_path %>
+          <%= link_to 'Project', edit_project_path(Project::CURRENT.id) %>
+          <%= link_to 'Account', account_index_path %>
+          <%= link_to 'Logout', logout_path %>
+        <% end %>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile menu, show/hide based on mobile menu state. -->
+  <!-- <div id="main-nav" data-header-target="mainNav" class="absolute top-0 inset-x-0 transition transform origin-top-right md:hidden z-10 duration-200 ease-in-out opacity-0 hidden">
+    <div class="bg-white drop-shadow-2xl">
+      <div class="p-4">
+        <div class="flex flex-row-reverse">
+          <button type="button" data-action="click->header#toggleMobileNav" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 js--navbar-burger">
+            <span class="sr-only">Close menu</span>
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <nav class="grid">
+          <a href="/" class="text-center p-4">
+            Home
+          </a>
+          <a href="/terms" class="text-center p-4">
+            Terms
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div> -->
+</header>
+
+<!-- smooth scroll nav links -->
+<script type="text/javascript">
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+              behavior: 'smooth'
+          });
+      });
+  });
+</script>

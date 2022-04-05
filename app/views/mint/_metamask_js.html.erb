@@ -1,0 +1,145 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.5.4/ethers.umd.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@metamask/onboarding@1.0.1/dist/metamask-onboarding.bundle.js"></script>
+<!-- metamask onboarding -->
+<script type="text/javascript">
+window.addEventListener('DOMContentLoaded', () => {
+  const onboarding = new MetaMaskOnboarding();
+  const onboardButton = document.getElementById('onboard');
+  const beginMintButton = document.getElementById('begin-mint');
+  const beginMintContainer = document.getElementById('begin-mint-container');
+  const completedTransactionLink = document.getElementById('completed-transaction-link');
+  const mintProgressTracker = document.getElementById('mint-progress-counter');
+
+  let accounts;
+
+  const showConnectedAccounts = () => {
+    var connectedWalletShort = window.ethereum.selectedAddress.slice(0, 6) + '...' + window.ethereum.selectedAddress.slice(-3);
+
+    onboardButton.innerText = 'Connected: ' + connectedWalletShort;
+    onboardButton.classList.remove('ml-20');
+    beginMintContainer.classList.remove('hidden');
+    onboardButton.disabled = true;
+  };
+
+  const updateControls = () => {
+    if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
+      onboardButton.innerText = 'Install MetaMask Wallet';
+      onboardButton.onclick = () => {
+        onboardButton.innerText = 'Onboarding in progress';
+        onboardButton.disabled = true;
+        onboarding.startOnboarding();
+        showConnectedAccounts();
+      };
+    } else if (accounts && accounts.length > 0) {
+      onboarding.stopOnboarding();
+    } else {
+      onboardButton.innerText = 'Connect';
+      onboardButton.onclick = async () => {
+        await window.ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+      };
+    }
+  };
+
+  const setReceipt = (msg) => {
+    completedTransactionLink.innerText = msg;
+  }
+
+  const beginMint = () => {
+    console.log('beginning mint...');
+    setReceipt('');
+
+    var numAssets = parseInt(document.getElementById('qty').value);
+    var ethValueToSend = (contractDetails.purchasePrice * numAssets);
+
+    try {
+      contract.mint(numAssets, { value: ethValueToSend.toString(), from: ethereum.selectedAddress })
+      .then((tx) => {
+        console.log('Transaction hash: ', tx.hash);
+        completedTransactionLink.innerHTML = 'Your transaction is complete! <br><a target="_blank" class="font-medium text-indigo-600" href="' + contractDetails.networkTransactionBaseUri + tx.hash + '">View it here >></a>';
+      }).catch((error) => {
+        errorHandler(error);
+      });
+    } catch (error) { // likely dont have metamask installed
+      if (error.toString().includes("Cannot access 'contract'")) {
+        setReceipt('Please ensure metamask is installed. If you need more help, contact us in Discord.');
+      } else {
+        console.log('Not sure what went wrong.');
+      }
+    }
+  }
+
+  // error message "includes" logic reads from smart contract require() statement custom error messages
+  const errorHandler = (error) => {
+    if (error.toString().includes('insufficient funds')) {
+      errorMsg = 'Mint rejected. Please add more funds (~' + document.getElementById('totalValue').textContent + ') to your wallet.';
+    } else if (error.toString().includes('You can only buy')) {
+      errorMsg = 'You can only buy 1 to ' + maxPurchaseQuantity.toString() + ' at a time.';
+    } else if (error && error.code === 4001) {
+      errorMsg = 'Mint rejected. Click "mint now" button to try again.';
+    } else if (error && error.code === -32603 && error.data.message.includes('Sale has not started yet')) {
+      errorMsg = 'Mint rejected. Sale has not started yet. Please try again when mint is live.';
+    } else if (error && error.code === -32603 && error.data.message.includes('insufficient funds')) {
+      errorMsg = 'Mint rejected. Please add more funds (~' + document.getElementById('totalValue').textContent + ') to your wallet.';
+    } else if (error && error.code === -32603 && error.data.message.includes('not enough assets left')) {
+      errorMsg = 'There are not enough assets left. Try again with a smaller quantity, otherwise the collection might be sold out.';
+    } else {
+      errorMsg = 'Something went wrong. Please send us a message in the Discord.';
+    }
+
+    console.log(error);
+    setReceipt(errorMsg);
+  }
+
+  const showMintProgress = () => {
+    var mp = setInterval(function(){
+      if (window.totalMinted != null && window.totalSupply != null) {
+        clearInterval(mp);
+        mintProgressTracker.innerText = '(' + window.totalMinted + '/' + window.totalSupply + ' minted)'
+      }
+    }, 500);
+  }
+
+  if (MetaMaskOnboarding.isMetaMaskInstalled()) {
+    window.ethereum.on('accountsChanged', (newAccounts) => {
+      accounts = newAccounts;
+      updateControls();
+      showConnectedAccounts();
+    });
+  }
+
+  setTimeout(function(){
+    if (window.ethereum.selectedAddress != null) {
+      showConnectedAccounts();
+    }
+  }, 1000);
+
+  // DOM-ready
+  updateControls();
+  showMintProgress();
+  beginMintButton.addEventListener('click', beginMint);
+
+  const provider = new _ethers.providers.Web3Provider(window.ethereum, "any"); // another to try: const provider = new ethers.providers.Web3Provider(window.ethereum);
+  provider.send("eth_requestAccounts", []);
+
+  provider.getNetwork().then((data) => {
+    window.connectedNetworkName = data.name;
+    if (window.connectedNetworkName != contractDetails.network) {
+      setReceipt('Error: please switch to the ' + contractDetails.network + ' network inside your MetaMask wallet.');
+    }
+  });
+
+  const signer = provider.getSigner();
+  const contract = new _ethers.Contract(contractDetails.contractAddress, contractDetails.contractAbi, signer);
+
+  contract.totalSupply().then((data) => {
+    window.totalMinted = data.toString();
+  });
+
+  contract.ASSET_LIMIT().then((data) => {
+    window.totalSupply = data.toString();
+  });
+
+});
+</script>

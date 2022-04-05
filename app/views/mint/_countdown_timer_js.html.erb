@@ -1,0 +1,34 @@
+<!-- countdown timer -->
+<script type="text/javascript">
+  var countDownDate = new Date(contractDetails.launchDateTime * 1000).getTime();
+
+  // Update the count down every 1 second
+  var x = setInterval(function() {
+    // Get today's date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // korean countdown
+    document.getElementById("launch-countdown").innerHTML = "개시: " + days + "일 " + hours + "시 "
+    + minutes + "분 " + seconds + "초 ";
+
+    // english countdown
+    // document.getElementById("launch-countdown").innerHTML = "Launch: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+    // If the countdown is finished, hide timer and expose mint features
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("launch-countdown").innerHTML = "";
+      document.getElementById('coming_soon').classList.add('hidden');
+      document.getElementById('cta_buttons').classList.remove('invisible');
+    }
+  }, 1000);
+</script>

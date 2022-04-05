@@ -1,0 +1,17 @@
+<!-- Site | Title -->
+<% meta title: @setup[:title] %>
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en">
+<meta property="og:type" content="website">
+<meta property="og:title" content="<%= Project::DEFAULT_NAME %> | <%= @setup[:title] %>">
+<meta property="og:description" content="<%= @setup[:description] %>">
+<meta property="og:site_name" content="<%= Project::DEFAULT_NAME %>">
+<meta property="og:image" content="<%= @setup[:og_image] %>">
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="640" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= Project::DEFAULT_NAME %> | <%= @setup[:title] %>">
+<meta name="twitter:image" content="<%= @setup[:og_image] %>">

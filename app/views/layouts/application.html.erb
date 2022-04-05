@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= render partial: 'shared/seo_head' %>
+    <%= metamagic site: Project::DEFAULT_NAME, title: [:site, :title], separator: " | " %>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= tag :meta, name: :rails_env, content: Rails.env %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body class="text-base lg:text-xl font-primary min-h-full">
+    <div class="min-h-screen flex flex-col overflow-x-hidden">
+      <%= render "shared/flash" %>
+      <%= render partial: 'shared/header' %>
+      <%= yield %>
+      <%= render partial: 'shared/footer' %>
+    </div>
+
+    <%= render partial: "shared/script_tags" %>
+  </body>
+</html>

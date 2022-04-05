@@ -1,0 +1,67 @@
+<!-- translations -->
+<script type="text/javascript">
+  function setLanguage(lng) {
+    if (lng === 'ko') {
+      translateToKorean();
+    } else {
+      translateToEnglish();
+    }
+  }
+
+  function translate(element, text) {
+    document.getElementById(element).innerHTML = text;
+  }
+
+  function translateToEnglish() {
+    //heading
+    translate('label-title', 'Mint <%= @project.name %>');
+    translate('label-description', '<%= @project.description %>');
+
+    //calculator
+    translate('label-price-per-nft', 'Price per NFT');
+    translate('label-max-per-transaction', 'Max per Transaction');
+    translate('label-quantity', 'Quantity');
+    translate('label-total', 'Total');
+
+    //cta
+    translate('onboard', 'Connect Wallet');
+    translate('begin-mint', 'Mint Now');
+  }
+
+  function translateToKorean() {
+    //heading
+    translate('label-title', '<%= @project.name %><br>민팅하기');
+    translate('label-description', '<%= @project.description %>'); // 'NFT에 환영합니다!'
+
+    //calculator
+    translate('label-price-per-nft', 'NFT 한 개당 금액');
+    translate('label-max-per-transaction', '최대 구매 제한 수량');
+    translate('label-quantity', '구매 수량');
+    translate('label-total', '총 금액');
+
+    //cta
+    translate('onboard', '지갑 필요');
+    translate('begin-mint', '지금 구매');
+  }
+
+
+  // on dom-ready (captures elements out of scope)
+  $(function() {
+    document.getElementById('language-picker-container').classList.remove('hidden');
+    var lng = window.navigator.userLanguage || window.navigator.language;
+    setLanguage(lng);
+
+    function setLanguagePickerDefault(lng) {
+      Array.from($('#language-picker').children('option')).forEach(function(opt) {
+        if (opt.getAttribute('data-language-id').include(lng)) {
+          opt.selected = true;
+        }
+      })
+    }
+
+    document.getElementById('language-picker').addEventListener('change', function() {
+      var chosenLang = this.selectedOptions[0].getAttribute('data-language-id');
+      setLanguage(chosenLang);
+    });
+  });
+</script>

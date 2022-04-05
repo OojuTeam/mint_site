@@ -1,0 +1,16 @@
+<% title_intro ||= nil %>
+<% title ||= nil %>
+<% additional_text ||= nil %>
+
+<div>
+  <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 style="min-height: 24px" class="text-base font-semibold text-indigo-600 tracking-wide uppercase"><%= title_intro %></h2>
+      <p id="label-title" class="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl"><%= title %></p>
+      <p id="label-description" class="max-w-xl mt-5 mx-auto text-xl text-gray-500">
+        <%= additional_text %>
+      </p>
+      <p id="mint-progress-counter" style="min-height: 20px" class="max-w-xl mt-2 mx-auto text-sm text-gray-500"></p>
+    </div>
+  </div>
+</div>

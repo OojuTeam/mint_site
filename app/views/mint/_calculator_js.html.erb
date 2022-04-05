@@ -1,0 +1,28 @@
+<!-- mint calculator  -->
+<script type="module">
+  const qtyPicker = document.getElementById('qty');
+
+  for(var i = 2; i <= contractDetails.maxPurchaseQuantity; i++){
+    var opt = document.createElement('option');
+    opt.innerText = i;
+    qtyPicker.append(opt);
+  }
+
+  const input = document.querySelector('input');
+  const total = document.getElementById('totalValue');
+
+  document.getElementById('price-per-asset').innerText = contractDetails.purchasePriceDisplay + ' ' + contractDetails.purchaseWithTokenName;
+  document.getElementById('max-per-transaction').innerText = contractDetails.maxPurchaseQuantity;
+
+  function updateTotal(qty) {
+    total.textContent = (qty) * contractDetails.purchasePriceDisplay + ' ' + contractDetails.purchaseWithTokenName;
+  }
+
+  document.querySelector('#qty').addEventListener("change", function() {
+    updateTotal(this.value);
+  });
+
+  // sets default on Dom Ready
+  qtyPicker.value = contractDetails.mintDefaultQuantity;
+  updateTotal(contractDetails.mintDefaultQuantity);
+</script>
