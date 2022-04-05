@@ -17,7 +17,7 @@ class ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:name, :description, :bg_image_url, :launch_epoch, :mint_qty_default, :mint_qty_max, :purchase_price, :purchase_price_friendly, :network, :contract_address)
+    params.require(:project).permit(:name, :description, :bg_image_url, :sns_image_url, :launch_epoch, :mint_qty_default, :mint_qty_max, :purchase_price, :purchase_price_friendly, :network, :contract_address)
   end
 
   def set_project

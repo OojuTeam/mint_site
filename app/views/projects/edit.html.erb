@@ -25,6 +25,11 @@
         <%= f.text_field :bg_image_url, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 'https://unsplash.com/....jpg' %>
       </div>
 
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_description" class="block text-xs font-medium text-gray-900">SNS preview 이미지 URL (선택 - 1200x640)</label>
+        <%= f.text_field :sns_image_url, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 'https://unsplash.com/....jpg' %>
+      </div>
+
       <div class="border border-gray-300 rounded-md px-3 py-2">
         <label for="project_launch_epoch" class="block text-xs font-medium text-gray-900">런칭 개시일</label>
         <%= f.number_field :launch_epoch, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: Time.now.to_i %>
