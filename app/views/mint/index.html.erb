@@ -3,9 +3,9 @@
 <% end %>
 
 <% @setup = {
-  title: 'Mint',
-  description: 'Mint an NFT asset.',
-  og_image: asset_url('ooju/shared/placeholder.png')
+  title: "#{@project.name} Mint",
+  description: @project.description,
+  og_image: @project.bg_image_url
 }
 %>
 
