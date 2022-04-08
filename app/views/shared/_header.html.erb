@@ -18,7 +18,7 @@
       </div> -->
       <nav class="hidden md:flex space-x-4 sm:space-x-6 lg:space-x-10 text-base">
         <% if current_user && current_user.admin? %>
-          <%= link_to 'Mint', mint_index_path %>
+          <%= link_to 'Mint', mint_index_path, data: { turbo: false } %>
           <%= link_to 'Project', edit_project_path(Project::CURRENT.id) %>
           <%= link_to 'Account', account_index_path %>
           <%= link_to 'Logout', logout_path %>
