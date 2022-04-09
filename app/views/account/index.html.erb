@@ -7,27 +7,106 @@
 <%= render partial: "shared/heading", locals: { title: '계정 만들기', description: '이메일과 비밀번호를 설정하세요' } %>
 
 <div class="grid col-span-1 mx-auto w-96">
-  <div>
-    <%= form_for(current_user, url: account_path(current_user.id), method: 'patch', html: {class: "mt-8", autocomplete: 'off'}) do |f| %>
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="email" class="block text-xs font-medium text-gray-900">이메일</label>
-        <input type="text" required="true" name="user[email]" id="user_email" class="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm" placeholder="<%= current_user.email %>">
-      </div>
-
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="password" class="block text-xs font-medium text-gray-900">비밀번호</label>
-        <input type="password" autocomplete="new-password" name="user[password]" id="user_password" class="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm">
-      </div>
-
-      <button type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+  <% if @project.ready? && @project.network == 'matic' %>
+    <h3 class="mb-2 text-2xl leading-9 font-extrabold text-gray-900">스마트 컨트랙트 작동</h3>
+    <span id="web3_switch" onclick="showWeb3Controls()" class="underline cursor-pointer text-sm">Enable web3</span>
+    <div id="web3_controls" class="hidden mb-2 border border-gray-300 rounded-md px-3 py-2">
+      <button onclick="withdraw()" type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-black text-sm font-medium rounded-md text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-          <!-- Heroicon name: solid/lock-closed -->
-          <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </span>
-        Save
+        토큰 인출
       </button>
-    <% end %>
-  </div>
+
+      <button onclick="startSale()" type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-black text-sm font-medium rounded-md text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </span>
+        판매 시작하기
+      </button>
+
+      <button onclick="stopSale()" type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-black text-sm font-medium rounded-md text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+          </svg>
+        </span>
+        판매 멈추기
+      </button>
+    </div>
+  <% end %>
+
+  <%= form_for(current_user, url: account_path(current_user.id), method: 'patch', html: {class: "mt-8", autocomplete: 'off'}) do |f| %>
+    <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+      <label for="email" class="block text-xs font-medium text-gray-900">이메일</label>
+      <input type="text" required="true" name="user[email]" id="user_email" class="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm" placeholder="<%= current_user.email %>">
+    </div>
+
+    <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+      <label for="password" class="block text-xs font-medium text-gray-900">비밀번호</label>
+      <input type="password" autocomplete="new-password" name="user[password]" id="user_password" class="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm">
+    </div>
+
+    <button type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+      <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+        <!-- Heroicon name: solid/lock-closed -->
+        <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" aria-hidden="true">
+          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+        </svg>
+      </span>
+      Save
+    </button>
+  <% end %>
 </div>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.5.4/ethers.umd.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@metamask/onboarding@1.0.1/dist/metamask-onboarding.bundle.js"></script>
+
+<script type="text/javascript">
+  var provider, signer, contract;
+
+  function showWeb3Controls() {
+    document.getElementById('web3_switch').classList.add('hidden');
+    document.getElementById('web3_controls').classList.remove('hidden');
+    enableWeb3();
+  }
+
+  function enableWeb3() {
+    provider = new _ethers.providers.Web3Provider(window.ethereum, "any");
+    provider.send("eth_requestAccounts", []);
+
+    provider.getNetwork().then((data) => {
+      window.connectedNetworkName = data.name;
+      if (window.connectedNetworkName != '<%= @project.network %>') {
+        setReceipt('Error: please switch to the Polygon network inside your MetaMask wallet.');
+      }
+    });
+
+    signer = provider.getSigner();
+    contract = new _ethers.Contract('<%= @project.contract_address %>', '<%= @project.contract_abi.to_json.html_safe %>', signer);
+  }
+
+  function withdraw() {
+    contract.withdraw({ from: ethereum.selectedAddress }).then((tx) => { showResponse(tx) });
+  }
+
+  function startSale() {
+    contract.attach(ethereum.selectedAddress).startSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
+  }
+
+  function stopSale() {
+    contract.attach(ethereum.selectedAddress).stopSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
+  }
+
+  function showResponse(tx) {
+    console.log(tx);
+    alert('Success! Transaction hash: ' + tx.hash);
+  }
+</script>
