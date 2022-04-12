@@ -3,7 +3,7 @@ class Project < ApplicationRecord
 
   serialize :contract_abi, Array
 
-  CURRENT = self.first.reload
+  CURRENT = self.first.try(:reload)
   DEFAULT_NAME = CURRENT.try(:name) || 'NFT'
 
   NETWORKS = %w(baobab klaytn matic maticmum ethereum)
