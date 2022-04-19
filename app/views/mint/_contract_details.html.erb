@@ -4,19 +4,19 @@
     launchDateTime: '<%= @project.launch_epoch %>', // epoch time; used on mint page, set to past date to disable
 
     // asset details, determined by smart contract
-    mintDefaultQuantity: '<%= @project.mint_qty_default %>',
-    maxPurchaseQuantity: '<%= @project.mint_qty_max %>',
-    purchasePriceDisplay: '<%= @project.purchase_price_friendly %>', // user friendly integer value, e.g. 26 (MATIC), 5 (KLAY), etc
+    mintDefaultQuantity: '1', // was @project.mint_qty_default
+    maxPurchaseQuantity: '<%= @smart_contract.mint_qty_max %>',
+    purchasePriceDisplay: '<%= @smart_contract.purchase_price_friendly %>', // user friendly integer value, e.g. 26 (MATIC), 5 (KLAY), etc
 
     // network details
-    network: '<%= @project.network %>', // options: 'matic', 'maticmum', 'klaytn', 'ethereum', etc. MetaMaskOnboarding uses to detect correct network (https://docs.ethers.io/v5/api/providers/api-providers/)
+    network: '<%= @smart_contract.network %>', // options: 'matic', 'maticmum', 'klaytn', 'ethereum', etc. MetaMaskOnboarding uses to detect correct network (https://docs.ethers.io/v5/api/providers/api-providers/)
     purchaseWithTokenName: '<%= purchase_with_token_name %>',
     networkTransactionBaseUri: '<%= network_transaction_base_uri %>',
     klaytnGas: '1000000',
 
     // contract details
-    purchasePrice: '<%= @project.purchase_price %>', // 26 MATIC = 26000000000000000000; 1 KLAY = 1000000000000000000 (https://docs.klaytn.com/klaytn/design/klaytn-native-coin-klay#units-of-klay)
-    contractAddress: '<%= @project.contract_address %>',
-    contractAbi: <%= @project.contract_abi.to_json.html_safe %>
+    purchasePrice: '<%= @smart_contract.purchase_price.round(0) %>',
+    contractAddress: '<%= @smart_contract.address %>',
+    contractAbi: <%= @smart_contract.abi.to_json.html_safe %>
   }
 </script>
