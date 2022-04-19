@@ -36,7 +36,8 @@ class SmartContractsController < ApplicationController
   # compiles contract with Ruby https://github.com/q9f/eth.rb/#28-solidity-compiler-bindings
   # TODO: move to service object, rename tmp files
   def setup_deployment
-    file = File.read('MintSite.sol')
+    file = File.read("#{Rails.root}/MintSite.sol")
+
     file.gsub!('MINT_PRICE = 1000000000000000000', "MINT_PRICE = #{@smart_contract.purchase_price.round(0)}")
     file.gsub!('MAX_PURCHASE_LIMIT = 10', "MAX_PURCHASE_LIMIT = #{@smart_contract.mint_qty_max}")
     file.gsub!('payable(0x0000000000000000000000000000000000000000)', "payable(#{@smart_contract.creator_wallet_address})");
