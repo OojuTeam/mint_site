@@ -3,5 +3,6 @@ class MintController < ApplicationController
 
   def index
     @project = Project::CURRENT
+    @smart_contract = SmartContract::CURRENT
   end
 end
