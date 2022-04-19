@@ -2,7 +2,6 @@ class SmartContractsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!
   before_action :set_smart_contract, except: [:show, :update]
-  before_action :setup_deployment, only: [:show]
   skip_before_action :verify_authenticity_token, only: [:update]
 
   def new
@@ -13,6 +12,7 @@ class SmartContractsController < ApplicationController
   # user makes sure everything is OK, then clicks to deploy client-side and pays gas
   def show
     @smart_contract = SmartContract.find_by(user_id: current_user.id, id: params[:id])
+    setup_deployment
   end
 
   def update
