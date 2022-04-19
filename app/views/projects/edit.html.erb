@@ -9,7 +9,6 @@
 <div class="flex mx-auto w-96">
   <div class="w-full">
     <%= form_for(@project, html: {class: "mt-8", autocomplete: 'off'}) do |f| %>
-      <h3 class="mb-2 text-2xl leading-9 font-extrabold text-gray-900">마케팅</h3>
       <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
         <label for="project_name" class="block text-xs font-medium text-gray-900">프로젝트명</label>
         <%= f.text_field :name, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 'NFT' %>
@@ -36,50 +35,6 @@
       </div>
       <div class="text-right">
         <small class="text-sm"><%= link_to '여기서', 'https://www.epochconverter.com/', target: :_blank, class: 'text-indigo-600' %> 만드세요.</small>
-      </div>
-
-      <h3 class="mt-2 mb-2 text-2xl leading-9 font-extrabold text-gray-900">스마트 컨트랙트</h3>
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_network" class="block text-xs font-medium text-gray-900">네트워크</label>
-        <%= f.select :network, Project::NETWORKS, { include_blank: 'Please select...'}, { required: true, class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'} %>
-      </div>
-
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_contract_address" class="block text-xs font-medium text-gray-900">스마트 컨트랙트 주소</label>
-        <%= f.text_field :contract_address, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: '0x31dA6C7101482F113e829CA600147F68145C80bA' %>
-      </div>
-
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_contract_abi" class="block text-xs font-medium text-gray-900">스마트 컨트랙트 ABI</label>
-        <%= f.text_field :contract_abi, value: nil, required: true, name: 'project[contract_abi][]', class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: '[{:inputs=>[], :stateMutability=>"nonpayable..."' %>
-      </div>
-
-      <h3 class="mt-4 mb-2 text-2xl leading-9 font-extrabold text-gray-900">NFT</h3>
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_mint_qty_default" class="block text-xs font-medium text-gray-900">기본 구매 수량</label>
-        <%= f.number_field :mint_qty_default, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 1 %>
-      </div>
-
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_mint_qty_max" class="block text-xs font-medium text-gray-900">최대 구매 수량</label>
-        <%= f.number_field :mint_qty_max, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 10 %>
-      </div>
-
-      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_purchase_price_friendly" class="block text-xs font-medium text-gray-900">토큰 당 금액 (기본 토큰 단위)</label>
-        <%= f.number_field :purchase_price_friendly, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 15 %>
-      </div>
-
-      <div class="border border-gray-300 rounded-md px-3 py-2">
-        <label for="project_purchase_price" class="block text-xs font-medium text-gray-900">토큰 당 금액 (컨트랙트용 단위)</label>
-        <%= f.number_field :purchase_price, value: @project.purchase_price.try(:round, 0), required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 15000000000000000 %>
-      </div>
-      <div class="text-right">
-        <small class="text-sm">계산:
-          <%= link_to 'KLAY', 'https://docs.klaytn.com/klaytn/design/klaytn-native-coin-klay#units-of-klay', target: :_blank, class: 'text-indigo-600' %> |
-          <%= link_to 'MATIC', 'https://polygonscan.com/unitconverter', target: :_blank, class: 'text-indigo-600' %> |
-          <%= link_to 'ETH', 'https://eth-converter.com/', target: :_blank, class: 'text-indigo-600' %>
-        </small>
       </div>
 
       <button type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
