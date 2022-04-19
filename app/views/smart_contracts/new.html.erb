@@ -1,0 +1,47 @@
+<% @setup = {
+  title: 'Create Smart Contract',
+  description: 'Edit smart contract details.'
+}
+%>
+
+<%= render partial: "shared/heading", locals: { title: '스마트 컨트랙트 만들기', description: '' } %>
+
+<div class="flex mx-auto w-96">
+  <div class="w-full">
+    <%= form_for(@smart_contract, html: {class: "mt-8", autocomplete: 'off'}) do |f| %>
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_name" class="block text-xs font-medium text-gray-900">컨트랙트명</label>
+        <%= f.text_field :name, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 'OneRoom' %>
+      </div>
+
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_name" class="block text-xs font-medium text-gray-900">컨트랙트 Symbol</label>
+        <%= f.text_field :symbol, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 'ONEROOM' %>
+      </div>
+
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_name" class="block text-xs font-medium text-gray-900">크리에이터 지갑 주소</label>
+        <%= f.text_field :creator_wallet_address, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: '0x0000000000000000000000000000000000000000' %>
+      </div>
+
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_network" class="block text-xs font-medium text-gray-900">네트워크</label>
+        <%= f.select :network, SmartContract::NETWORKS, { include_blank: 'Please select...'}, { required: true, class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'} %>
+      </div>
+
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_mint_qty_max" class="block text-xs font-medium text-gray-900">최대 구매 수량</label>
+        <%= f.number_field :mint_qty_max, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 10 %>
+      </div>
+
+      <div class="mb-2 border border-gray-300 rounded-md px-3 py-2">
+        <label for="project_purchase_price_friendly" class="block text-xs font-medium text-gray-900">토큰 당 금액 (기본 토큰 단위)</label>
+        <%= f.number_field :purchase_price_friendly, required: true, class: 'block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm', placeholder: 15 %>
+      </div>
+
+      <button type="submit" data-turbo="false" class="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Create
+      </button>
+    <% end %>
+  </div>
+</div>
