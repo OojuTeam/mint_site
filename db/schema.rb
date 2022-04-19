@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_05_132116) do
+ActiveRecord::Schema.define(version: 2022_04_19_091459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,13 +19,6 @@ ActiveRecord::Schema.define(version: 2022_04_05_132116) do
     t.string "name"
     t.text "description"
     t.bigint "launch_epoch"
-    t.integer "mint_qty_default"
-    t.integer "mint_qty_max"
-    t.decimal "purchase_price"
-    t.integer "purchase_price_friendly"
-    t.string "network"
-    t.string "contract_address"
-    t.string "contract_abi"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -33,6 +26,22 @@ ActiveRecord::Schema.define(version: 2022_04_05_132116) do
     t.text "bg_image_url_mobile"
     t.text "sns_image_url"
     t.index ["user_id"], name: "index_projects_on_user_id"
+  end
+
+  create_table "smart_contracts", force: :cascade do |t|
+    t.string "name"
+    t.string "symbol"
+    t.string "creator_wallet_address"
+    t.decimal "purchase_price"
+    t.integer "purchase_price_friendly"
+    t.integer "mint_qty_max"
+    t.string "network"
+    t.string "address"
+    t.string "abi"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_smart_contracts_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -49,4 +58,5 @@ ActiveRecord::Schema.define(version: 2022_04_05_132116) do
   end
 
   add_foreign_key "projects", "users"
+  add_foreign_key "smart_contracts", "users"
 end
