@@ -3,16 +3,17 @@ class AccountController < ApplicationController
 
   def index
     @project = Project::CURRENT
+    @smart_contract = SmartContract::CURRENT
   end
 
   def update
     current_user.update(account_update_params)
     sign_in(current_user, bypass: true) # prevents user from needing to log back in
 
-    if Project::CURRENT.ready?
+    if Project::CURRENT.connected_to_deployed_contract?
       redirect_to account_index_path, notice: '계정 업데이트가 성공적으로 되었습니다'
     else
-      redirect_to edit_project_path(Project::CURRENT.id)
+      redirect_to new_smart_contract_path
     end
   end
 
