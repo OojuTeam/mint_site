@@ -64,7 +64,7 @@
 <%= render "contract_details" %>
 <%= render "calculator_js" %>
 
-<% if Project::CURRENT.network == 'klaytn' %>
+<% if @project.network == 'klaytn' %>
   <%= render "kaikas_js" %>
 <% else %>
   <%= render "metamask_js" %>
