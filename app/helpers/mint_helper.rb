@@ -1,6 +1,6 @@
 module MintHelper
   def purchase_with_token_name
-    case Project::CURRENT.network
+    case SmartContract::CURRENT.network
       when 'baobab', 'klaytn'
         'KLAY'
       when 'matic'
@@ -13,7 +13,7 @@ module MintHelper
   end
 
   def network_transaction_base_uri
-    case Project::CURRENT.network
+    case SmartContract::CURRENT.network
       when 'baobab'
         'https://baobab.scope.klaytn.com/tx/'
       when 'klaytn'
