@@ -1,8 +1,6 @@
 class Project < ApplicationRecord
   belongs_to :user
 
-  serialize :contract_abi, Array
-
   CURRENT = self.first.try(:reload)
   DEFAULT_NAME = CURRENT.try(:name) || 'NFT'
 
