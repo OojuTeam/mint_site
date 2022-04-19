@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resources :account, only: [:index, :update]
   resources :projects, only: [:edit, :update]
+  resources :smart_contracts, only: [:new, :show, :update, :create]
   resources :mint, only: [:index]
 
   # static pages
