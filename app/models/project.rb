@@ -6,9 +6,11 @@ class Project < ApplicationRecord
   CURRENT = self.first.try(:reload)
   DEFAULT_NAME = CURRENT.try(:name) || 'NFT'
 
-  NETWORKS = %w(baobab klaytn matic maticmum ethereum)
+  def connected_to_deployed_contract?
+    (user.smart_contract.address && user.smart_contract.abi).present?
+  end
 
-  def ready?
-    (launch_epoch && mint_qty_default && mint_qty_max && network && purchase_price_friendly && purchase_price && contract_address && contract_abi).present?
+  def network
+    user.smart_contract.network
   end
 end
