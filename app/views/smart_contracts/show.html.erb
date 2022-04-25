@@ -31,8 +31,8 @@
   provider.send("eth_requestAccounts", []);
 
   var signer = provider.getSigner();
-  var abi = <%= @abi.to_json.html_safe %>;
-  var bytes = '<%= @bytes %>'
+  var abi = <%= @smart_contract.abi.to_json.html_safe %>;
+  var bytes = '<%= @smart_contract.bytecode %>'
   var deployedAddress, txHash;
 
   // note: can add {gasPrice: 85000000000} inside deploy()
