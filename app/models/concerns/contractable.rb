@@ -5,6 +5,7 @@ module Contractable
     before_create :sanitize_contract_name
     before_create :sanitize_contract_symbol
     before_create :set_purchase_price
+    after_create :compile!
   end
 
   def sanitize_contract_name
@@ -26,5 +27,14 @@ module Contractable
     end
 
     self.purchase_price = num_str.to_f
+  end
+
+  def compile!
+    url = 'http://4x5v.hatchboxapp.com/contract_compilations'
+    params = { name: name, purchase_price: purchase_price.round(0), mint_qty_max: mint_qty_max, creator_wallet_address: creator_wallet_address, symbol: symbol }
+    resp = HTTParty.post(url, body: params)
+    data = JSON.parse(resp.body)
+
+    update(abi: data['abi'], bytecode: data['bytes'])
   end
 end
