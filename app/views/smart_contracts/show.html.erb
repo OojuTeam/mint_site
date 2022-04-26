@@ -59,7 +59,7 @@
       method: 'patch',
       data: { contract_address: deployedAddress },
       success: function(data) {
-        window.location.href = '/projects/<%= Project::CURRENT.id %>/edit';
+        window.location.href = '/verifying';
       }
     })
   }
