@@ -41,12 +41,7 @@ module Contractable
 
     update(abi: data['abi'], bytecode: data['bytes'], source_code: data['source'])
   end
-
-  def verify_and_check!
-    verify!
-    check!
-  end
-
+  
   def verify!
     url = solidity_server_base_uri + '/contract_verifications'
     params = attributes.slice('address', 'source_code', 'name', 'network')

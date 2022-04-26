@@ -13,17 +13,46 @@
 </div>
 
 <script type="text/javascript">
+  var contractVerifier, contractVerifiedStatus;
+
   function verifyContract() {
-    console.log('verifying / checking contract...');
+    console.log('verifying contract...');
 
     $.ajax({
       url: '/verify',
       method: 'patch',
       success: function(data) {
-        window.location.href = '/projects/<%= Project::CURRENT.id %>/edit';
+        console.log(data);
+        beginVerification();
       }
     })
   }
 
+  function beginVerification() {
+    contractVerifier = setInterval(function(){
+      if (contractVerifiedStatus) {
+        clearInterval(contractVerifier);
+        window.location.href = '/projects/<%= Project::CURRENT.id %>/edit';
+      } else {
+        checkVerification();
+      }
+    }, 3000);
+  }
+
+  function checkVerification() {
+    console.log('checking contract verification...');
+
+    $.ajax({
+      url: '/check',
+      method: 'patch',
+      success: function(data) {
+        if (data.verified) {
+          contractVerifiedStatus = true;
+        }
+      }
+    })
+  }
+
+  // dom-ready
   verifyContract();
 </script>

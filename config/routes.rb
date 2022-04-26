@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :smart_contracts, only: [:new, :show, :update, :create]
   get 'verifying', to: 'smart_contracts#verifying'
   patch 'verify', to: 'smart_contracts#verify'
+  patch 'check', to: 'smart_contracts#check'
 
   resources :mint, only: [:index]
 

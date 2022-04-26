@@ -1,8 +1,8 @@
 class SmartContractsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!
-  before_action :set_smart_contract, only: [:new, :create]
-  skip_before_action :verify_authenticity_token, only: [:update, :verify]
+  before_action :instantiate_smart_contract, only: [:new, :create]
+  skip_before_action :verify_authenticity_token, only: [:update, :verify, :check]
 
   def new
     @project = Project::CURRENT
@@ -26,8 +26,16 @@ class SmartContractsController < ApplicationController
 
   def verify
     @smart_contract = SmartContract::CURRENT
-    @smart_contract.verify_and_check!
+    @smart_contract.verify!
+
     render json: { status: 'ok' }
+  end
+
+  def check
+    @smart_contract = SmartContract::CURRENT
+    @smart_contract.check!
+
+    render json: { status: 'ok', verified: @smart_contract.reload.verified }
   end
 
   def create
@@ -41,7 +49,7 @@ class SmartContractsController < ApplicationController
     params.require(:smart_contract).permit(:name, :symbol, :creator_wallet_address, :network, :mint_qty_max, :purchase_price_friendly)
   end
 
-  def set_smart_contract
+  def instantiate_smart_contract
     @smart_contract = SmartContract.new(user_id: current_user.id)
   end
 end
