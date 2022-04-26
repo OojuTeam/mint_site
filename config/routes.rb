@@ -7,7 +7,11 @@ Rails.application.routes.draw do
 
   resources :account, only: [:index, :update]
   resources :projects, only: [:edit, :update]
+
   resources :smart_contracts, only: [:new, :show, :update, :create]
+  get 'verifying', to: 'smart_contracts#verifying'
+  patch 'verify', to: 'smart_contracts#verify'
+
   resources :mint, only: [:index]
 
   # static pages
