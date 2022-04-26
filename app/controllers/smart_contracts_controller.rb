@@ -1,8 +1,8 @@
 class SmartContractsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!
-  before_action :set_smart_contract, except: [:show, :update]
-  skip_before_action :verify_authenticity_token, only: [:update]
+  before_action :set_smart_contract, only: [:new, :create]
+  skip_before_action :verify_authenticity_token, only: [:update, :verify]
 
   def new
     @project = Project::CURRENT
@@ -18,6 +18,15 @@ class SmartContractsController < ApplicationController
     @smart_contract = SmartContract::CURRENT
     @smart_contract.update(address: params[:contract_address]) if @smart_contract.address.blank? # disable re-deployments
 
+    render json: { status: 'ok' }
+  end
+
+  def verifying
+  end
+
+  def verify
+    @smart_contract = SmartContract::CURRENT
+    @smart_contract.verify_and_check!
     render json: { status: 'ok' }
   end
 
