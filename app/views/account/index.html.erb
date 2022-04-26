@@ -7,7 +7,7 @@
 <%= render partial: "shared/heading", locals: { title: '계정 만들기', description: '이메일과 비밀번호를 설정하세요' } %>
 
 <div class="grid col-span-1 mx-auto w-96">
-  <% if @project.connected_to_deployed_contract? && @project.network == 'matic' %>
+  <% if @project.connected_to_deployed_contract? && %w(matic maticmum).include?(@project.network)  %>
     <h3 class="mb-2 text-2xl leading-9 font-extrabold text-gray-900">스마트 컨트랙트 작동</h3>
     <span id="web3_switch" onclick="showWeb3Controls()" class="underline cursor-pointer text-sm">Enable web3</span>
     <div id="web3_controls" class="hidden mb-2 border border-gray-300 rounded-md px-3 py-2">
@@ -95,12 +95,13 @@
     provider.getNetwork().then((data) => {
       window.connectedNetworkName = data.name;
       if (window.connectedNetworkName != '<%= @project.network %>') {
-        setReceipt('Error: please switch to the Polygon network inside your MetaMask wallet.');
+        alert('Error: please switch to the ' + '<%= @project.network %>' + ' network inside your MetaMask wallet.');
       }
     });
 
     signer = provider.getSigner();
-    contract = new _ethers.Contract('<%= @smart_contract.try(:address) %>', '<%= @smart_contract.try(:abi).try(:to_json).try(:html_safe) %>', signer);
+    contract = new _ethers.Contract('<%= @smart_contract.try(:address) %>', <%= @smart_contract.try(:abi).try(:to_json).try(:html_safe) %>, signer);
+    signer = contract.provider.getSigner(ethereum.selectedAddress);
   }
 
   function withdraw() {
@@ -108,11 +109,11 @@
   }
 
   function startSale() {
-    contract.attach(ethereum.selectedAddress).startSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
+    contract.connect(signer).startSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
   }
 
   function stopSale() {
-    contract.attach(ethereum.selectedAddress).stopSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
+    contract.connect(signer).stopSale({from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
   }
 
   function setBaseUri() {
@@ -121,7 +122,7 @@
     if (baseUri == '') {
       alert('BaseURI must be set!')
     } else {
-      contract.attach(ethereum.selectedAddress).setBaseURI(baseUri, {from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
+      contract.connect(signer).setBaseURI(baseUri, {from: ethereum.selectedAddress}).then((tx) => { showResponse(tx) });
     }
   }
 
