@@ -1,0 +1,29 @@
+<% @setup = {
+  title: 'Verify Smart Contract',
+  description: 'Verifying smart contract details.'
+}
+%>
+
+<%= render partial: "shared/heading", locals: { title: '스마트 컨트랙트 Verify', description: '스마트 컨트랙트가 블록체인에 제데로 배포되었는지 체크하는 과정입니다. 잠시만 기다려주세요...' } %>
+
+<div class="flex mx-auto w-96">
+  <div class="w-full text-center">
+    <p class='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-base mt-4'>완료시 자동으로 새로고침됩니다.</p>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function verifyContract() {
+    console.log('verifying / checking contract...');
+
+    $.ajax({
+      url: '/verify',
+      method: 'patch',
+      success: function(data) {
+        window.location.href = '/projects/<%= Project::CURRENT.id %>/edit';
+      }
+    })
+  }
+
+  verifyContract();
+</script>
